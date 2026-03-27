@@ -2662,8 +2662,9 @@ class _BottomActionsState extends State<BottomActions>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            _buildVoiceHint(), // 提示卡始终显示
+            const SizedBox(height: 8),
             _buildMainInputRow(),
-            if (_isVoiceMode) _buildVoiceHint(),
           ],
         ),
       ),
@@ -2865,9 +2866,22 @@ class _BottomActionsState extends State<BottomActions>
       child: Container(
         width: 36,
         height: 36,
+        margin: const EdgeInsets.only(bottom: 8), // 上移 8（约0.2倍高度）
         decoration: BoxDecoration(
           color: Colors.grey[200],
           shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.12),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 3,
+              offset: const Offset(0, 1),
+            ),
+          ],
         ),
         child: const Icon(
           CupertinoIcons.add,
@@ -2880,11 +2894,18 @@ class _BottomActionsState extends State<BottomActions>
 
   Widget _buildVoiceHint() {
     return Container(
-      margin: const EdgeInsets.only(top: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      margin: const EdgeInsets.only(top: 12), // 增加间距
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: Colors.grey[100],
         borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: GestureDetector(
         onTap: _cycleHint,
