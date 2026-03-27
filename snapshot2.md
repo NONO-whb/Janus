@@ -1,0 +1,57 @@
+- generic [ref=e2]:
+  - generic:
+    - button "Enable accessibility" [ref=e3]
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic: 
+              - generic: ENG
+              - generic:
+                - generic: 
+              - generic: 
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: 分
+                      - generic: 析
+                      - generic: 这
+                      - generic: 个
+                      - generic: 项
+                      - generic: 目
+                      - generic: 套
+                      - generic: 哪
+                      - generic: 些
+                      - generic: 定
+                      - generic: 额
+                      - generic: 比
+                      - generic: 较
+                      - generic: 合
+                      - generic: 理？
+                    - generic:
+                      - generic: 查
+                      - generic: 看
+                      - generic: 学
+                      - generic: 校
+                      - generic: 综
+                      - generic: 合
+                      - generic: 楼
+                      - generic: 当
+                      - generic: 前
+                      - generic: 进
+                      - generic: 度
+              - generic:
+                - generic: 
+              - generic:
+                - generic: 
+              - generic:
+                - generic: 
+              - img
+              - generic: 询
+              - generic: 问
+              - generic: Agent
+              - generic: ...
+              - generic: 
