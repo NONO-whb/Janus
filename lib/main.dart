@@ -332,6 +332,313 @@ class _LogoAnimationState extends State<LogoAnimation>
   }
 }
 
+// ==================== 侧边栏视图 ====================
+class _SidebarView extends StatelessWidget {
+  final VoidCallback onClose;
+
+  const _SidebarView({required this.onClose});
+
+  final List<Map<String, dynamic>> _records = const [
+    {'title': '混凝土基础定额匹配记录', 'date': '2026-03-27', 'type': '定额'},
+    {'title': '钢筋工程量计算', 'date': '2026-03-26', 'type': '计算'},
+    {'title': '招标文件分析', 'date': '2026-03-25', 'type': '分析'},
+  ];
+
+  final List<Map<String, dynamic>> _files = const [
+    {'name': '学校综合楼图纸.pdf', 'size': '12.5 MB', 'type': 'pdf'},
+    {'name': '工程量清单.xlsx', 'size': '856 KB', 'type': 'xlsx'},
+    {'name': '招标文件.docx', 'size': '2.3 MB', 'type': 'doc'},
+    {'name': '结构图.dwg', 'size': '5.1 MB', 'type': 'dwg'},
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.75,
+      height: MediaQuery.of(context).size.height,
+      color: DesignTokens.background,
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 头部
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    '工作空间',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    minSize: 0,
+                    onPressed: onClose,
+                    child: const Icon(
+                      CupertinoIcons.xmark,
+                      size: 24,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            // 记录事项区域
+            Expanded(
+              flex: 1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          CupertinoIcons.clock,
+                          size: 18,
+                          color: DesignTokens.secondaryText,
+                        ),
+                        const SizedBox(width: 8),
+                        const Text(
+                          '记录事项',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: DesignTokens.secondaryText,
+                          ),
+                        ),
+                        const Spacer(),
+                        CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          minSize: 0,
+                          onPressed: () {},
+                          child: const Text(
+                            '查看全部',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: DesignTokens.quotaHighlight,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: _records.length,
+                      itemBuilder: (context, index) {
+                        final record = _records[index];
+                        return _buildRecordItem(record);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // 分隔线
+            const Divider(height: 1, indent: 16, endIndent: 16),
+            // 项目文件区域
+            Expanded(
+              flex: 1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          CupertinoIcons.folder,
+                          size: 18,
+                          color: DesignTokens.secondaryText,
+                        ),
+                        const SizedBox(width: 8),
+                        const Text(
+                          '项目文件',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: DesignTokens.secondaryText,
+                          ),
+                        ),
+                        const Spacer(),
+                        CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          minSize: 0,
+                          onPressed: () {},
+                          child: const Icon(
+                            CupertinoIcons.plus,
+                            size: 20,
+                            color: DesignTokens.quotaHighlight,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: _files.length,
+                      itemBuilder: (context, index) {
+                        final file = _files[index];
+                        return _buildFileItem(file);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRecordItem(Map<String, dynamic> record) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: () {},
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: const BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: DesignTokens.separator, width: 0.5),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: record['type'] == '定额'
+                    ? CupertinoColors.activeBlue
+                    : record['type'] == '计算'
+                        ? CupertinoColors.systemGreen
+                        : CupertinoColors.systemOrange,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    record['title'],
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: DesignTokens.primaryText,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${record['date']} · ${record['type']}',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: DesignTokens.tertiaryText,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              CupertinoIcons.chevron_right,
+              size: 16,
+              color: DesignTokens.tertiaryText,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFileItem(Map<String, dynamic> file) {
+    IconData icon;
+    Color color;
+    switch (file['type']) {
+      case 'pdf':
+        icon = CupertinoIcons.doc_text;
+        color = CupertinoColors.systemRed;
+      case 'xlsx':
+        icon = CupertinoIcons.chart_bar;
+        color = CupertinoColors.systemGreen;
+      case 'doc':
+        icon = CupertinoIcons.doc;
+        color = CupertinoColors.activeBlue;
+      case 'dwg':
+        icon = CupertinoIcons.layers;
+        color = CupertinoColors.systemOrange;
+      default:
+        icon = CupertinoIcons.doc;
+        color = DesignTokens.secondaryText;
+    }
+
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: () {},
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: const BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: DesignTokens.separator, width: 0.5),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                icon,
+                size: 18,
+                color: color,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    file['name'],
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: DesignTokens.primaryText,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    file['size'],
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: DesignTokens.tertiaryText,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 // ==================== 项目列表页 ====================
 class ProjectsListView extends StatefulWidget {
   const ProjectsListView({super.key});
@@ -1276,9 +1583,10 @@ class _ChatViewState extends State<ChatView> with TickerProviderStateMixin {
   }
 
   void _showProjectsList(BuildContext context) {
-    Navigator.of(context).push(
-      CupertinoPageRoute(
-        builder: (context) => const ProjectsListView(),
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) => _SidebarView(
+        onClose: () => Navigator.pop(context),
       ),
     );
   }
@@ -2407,7 +2715,7 @@ class _BottomActionsState extends State<BottomActions>
   bool _isRecording = false;
   late AnimationController _waveAnimationController;
 
-  String _voiceStatus = '按住 说话';
+  String _voiceStatus = '点击 说话';
   final List<String> _voiceHints = [
     '试试说："1-1-1 人工挖土方"',
     '试试说："查询混凝土基础定额"',
@@ -2466,14 +2774,14 @@ class _BottomActionsState extends State<BottomActions>
   void _startRecording() {
     setState(() {
       _isRecording = true;
-      _voiceStatus = '松开 结束';
+      _voiceStatus = '点击 结束';
     });
   }
 
   void _stopRecording() {
     setState(() {
       _isRecording = false;
-      _voiceStatus = '按住 说话';
+      _voiceStatus = '点击 说话';
     });
     _simulateVoiceRecognition();
   }
@@ -2751,32 +3059,50 @@ class _BottomActionsState extends State<BottomActions>
 
   Widget _buildVoiceButton() {
     return GestureDetector(
-      onLongPressStart: (_) => _startRecording(),
-      onLongPressEnd: (_) => _stopRecording(),
+      onTap: () {
+        if (_isRecording) {
+          _stopRecording();
+        } else {
+          _startRecording();
+        }
+      },
       child: Container(
         height: 40,
         decoration: BoxDecoration(
           color: _isRecording
-              ? CupertinoColors.systemGrey4
+              ? CupertinoColors.systemRed.withOpacity(0.1)
               : CupertinoColors.white,
           borderRadius: BorderRadius.circular(6),
           border: Border.all(
             color: _isRecording
-                ? CupertinoColors.systemGrey3
+                ? CupertinoColors.systemRed
                 : Colors.grey[300]!,
             width: 0.5,
           ),
         ),
         child: Center(
-          child: Text(
-            _voiceStatus,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: _isRecording
-                  ? CupertinoColors.systemGrey
-                  : DesignTokens.primaryText,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                _isRecording ? CupertinoIcons.stop_fill : CupertinoIcons.mic_fill,
+                size: 16,
+                color: _isRecording
+                    ? CupertinoColors.systemRed
+                    : DesignTokens.primaryText,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                _voiceStatus,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: _isRecording
+                      ? CupertinoColors.systemRed
+                      : DesignTokens.primaryText,
+                ),
+              ),
+            ],
           ),
         ),
       ),
