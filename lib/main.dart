@@ -375,8 +375,8 @@ class _SidebarView extends StatelessWidget {
                     ),
                   ),
                   CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    minSize: 0,
+                    padding: const EdgeInsets.all(8), // 增大点击区域
+                    minSize: 44, // 符合iOS点击规范
                     onPressed: onClose,
                     child: const Icon(
                       CupertinoIcons.xmark,
@@ -2713,6 +2713,7 @@ class _BottomActionsState extends State<BottomActions>
   final FocusNode _focusNode = FocusNode();
   bool _isVoiceMode = false;
   bool _isRecording = false;
+  bool _isProcessingVoice = false; // 防抖标志
   late AnimationController _waveAnimationController;
 
   String _voiceStatus = '点击 说话';
@@ -2772,6 +2773,8 @@ class _BottomActionsState extends State<BottomActions>
   }
 
   void _startRecording() {
+    if (_isProcessingVoice) return; // 防止重复触发
+    _isProcessingVoice = true;
     setState(() {
       _isRecording = true;
       _voiceStatus = '点击 结束';
@@ -2779,11 +2782,15 @@ class _BottomActionsState extends State<BottomActions>
   }
 
   void _stopRecording() {
+    if (!_isProcessingVoice) return;
     setState(() {
       _isRecording = false;
       _voiceStatus = '点击 说话';
     });
     _simulateVoiceRecognition();
+    Future.delayed(const Duration(milliseconds: 300), () {
+      _isProcessingVoice = false;
+    });
   }
 
   void _simulateVoiceRecognition() {
@@ -3076,7 +3083,7 @@ class _BottomActionsState extends State<BottomActions>
           border: Border.all(
             color: _isRecording
                 ? CupertinoColors.systemRed
-                : Colors.grey[300]!,
+                : Colors.grey[300] ?? Colors.grey,
             width: 0.5,
           ),
         ),
@@ -3120,7 +3127,7 @@ class _BottomActionsState extends State<BottomActions>
       decoration: BoxDecoration(
         color: CupertinoColors.white,
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: Colors.grey[300]!, width: 0.5),
+        border: Border.all(color: Colors.grey[300] ?? Colors.grey, width: 0.5),
       ),
       child: Row(
         children: [
@@ -3665,7 +3672,7 @@ class _QuotaSearchViewState extends State<QuotaSearchView> {
                 decoration: BoxDecoration(
                   color: CupertinoColors.white,
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.grey[300]!),
+                  border: Border.all(color: Colors.grey[300] ?? Colors.grey),
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                 onChanged: _performSearch,
