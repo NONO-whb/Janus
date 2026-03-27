@@ -2714,6 +2714,7 @@ class _BottomActionsState extends State<BottomActions>
   bool _isVoiceMode = false;
   bool _isRecording = false;
   bool _isProcessingVoice = false; // 防抖标志
+  bool _isOptionsExpanded = false; // +按钮展开状态
   late AnimationController _waveAnimationController;
 
   String _voiceStatus = '点击 说话';
@@ -2811,116 +2812,24 @@ class _BottomActionsState extends State<BottomActions>
     });
   }
 
-  void _showFilePicker() async {
-    showCupertinoModalPopup(
-      context: context,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-          color: DesignTokens.background,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildFunctionButton(
-                      icon: CupertinoIcons.photo,
-                      label: '照片',
-                      onTap: () {
-                        Navigator.pop(context);
-                        _pickImage();
-                      },
-                    ),
-                    _buildFunctionButton(
-                      icon: CupertinoIcons.doc,
-                      label: '文件',
-                      onTap: () {
-                        Navigator.pop(context);
-                        _pickFile();
-                      },
-                    ),
-                    _buildFunctionButton(
-                      icon: CupertinoIcons.search,
-                      label: '查定额',
-                      onTap: () {
-                        Navigator.pop(context);
-                        _openQuotaSearch();
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                CupertinoButton(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text(
-                    '取消',
-                    style: TextStyle(
-                      color: DesignTokens.secondaryText,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+  void _toggleOptions() {
+    setState(() {
+      _isOptionsExpanded = !_isOptionsExpanded;
+    });
   }
 
-  Widget _buildFunctionButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return CupertinoButton(
-      padding: EdgeInsets.zero,
-      onPressed: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Icon(
-              icon,
-              size: 28,
-              color: Colors.black,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 13,
-              color: DesignTokens.primaryText,
-            ),
-          ),
-        ],
-      ),
-    );
+  void _takePhoto() async {
+    setState(() {
+      _isOptionsExpanded = false;
+    });
+    // TODO: 实现拍照功能（需要 image_picker 插件）
+    widget.onSendMessage('[拍照上传]');
   }
 
   void _pickImage() async {
+    setState(() {
+      _isOptionsExpanded = false;
+    });
     try {
       final result = await FilePicker.platform.pickFiles(
         type: FileType.image,
@@ -2935,6 +2844,9 @@ class _BottomActionsState extends State<BottomActions>
   }
 
   void _pickFile() async {
+    setState(() {
+      _isOptionsExpanded = false;
+    });
     try {
       final result = await FilePicker.platform.pickFiles(
         type: FileType.any,
@@ -2948,10 +2860,75 @@ class _BottomActionsState extends State<BottomActions>
     }
   }
 
-  void _openQuotaSearch() {
-    Navigator.of(context).push(
-      CupertinoPageRoute(
-        builder: (context) => const QuotaSearchView(),
+  Widget _buildExpandedOptions() {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeInOut,
+      height: _isOptionsExpanded ? 90 : 0,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 200),
+        opacity: _isOptionsExpanded ? 1.0 : 0.0,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildOptionButton(
+                icon: CupertinoIcons.camera_fill,
+                label: '拍照',
+                onTap: _takePhoto,
+              ),
+              _buildOptionButton(
+                icon: CupertinoIcons.photo_fill,
+                label: '图片',
+                onTap: _pickImage,
+              ),
+              _buildOptionButton(
+                icon: CupertinoIcons.doc_fill,
+                label: '文件',
+                onTap: _pickFile,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOptionButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: Colors.grey[200] ?? Colors.grey),
+            ),
+            child: Icon(
+              icon,
+              size: 24,
+              color: Colors.black87,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 12,
+              color: DesignTokens.secondaryText,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -2980,6 +2957,7 @@ class _BottomActionsState extends State<BottomActions>
             _buildVoiceHint(), // 提示卡始终显示
             const SizedBox(height: 8),
             _buildMainInputRow(),
+            _buildExpandedOptions(), // 展开的功能选项
           ],
         ),
       ),
@@ -3195,78 +3173,112 @@ class _BottomActionsState extends State<BottomActions>
     return CupertinoButton(
       padding: EdgeInsets.zero,
       minSize: 0,
-      onPressed: _showFilePicker,
-      child: Container(
-        width: 36,
-        height: 36,
-        margin: const EdgeInsets.only(bottom: 8), // 上移 8（约0.2倍高度）
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.12),
-              blurRadius: 8,
-              offset: const Offset(0, 3),
-            ),
-            BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 3,
-              offset: const Offset(0, 1),
-            ),
-          ],
-        ),
-        child: const Icon(
-          CupertinoIcons.add,
-          size: 24,
-          color: CupertinoColors.systemGrey,
+      onPressed: _toggleOptions,
+      child: AnimatedRotation(
+        duration: const Duration(milliseconds: 250),
+        turns: _isOptionsExpanded ? 0.125 : 0, // 旋转45度
+        child: Container(
+          width: 36,
+          height: 36,
+          margin: const EdgeInsets.only(top: 4), // 下移 4（约0.1倍高度）
+          decoration: BoxDecoration(
+            color: _isOptionsExpanded ? Colors.black : Colors.grey[200],
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.12),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
+              ),
+              BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 3,
+                offset: const Offset(0, 1),
+              ),
+            ],
+          ),
+          child: Icon(
+            CupertinoIcons.add,
+            size: 24,
+            color: _isOptionsExpanded ? Colors.white : CupertinoColors.systemGrey,
+          ),
         ),
       ),
     );
   }
 
+  // 3个固定提示卡数据
+  final List<Map<String, dynamic>> _hintCards = [
+    {
+      'icon': CupertinoIcons.lightbulb_fill,
+      'text': '查询定额',
+      'color': CupertinoColors.systemYellow,
+    },
+    {
+      'icon': CupertinoIcons.number,
+      'text': '工程量计算',
+      'color': CupertinoColors.systemBlue,
+    },
+    {
+      'icon': CupertinoIcons.arrow_2_circlepath,
+      'text': '材料换算',
+      'color': CupertinoColors.systemGreen,
+    },
+  ];
+
   Widget _buildVoiceHint() {
-    return Container(
-      margin: const EdgeInsets.only(top: 12), // 增加间距
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
+    const double fontSize = 13;
+    const double cardHeight = fontSize * 2.5; // 文字高度的2.5倍
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: _hintCards.map((hint) {
+        return GestureDetector(
+          onTap: () {
+            // 点击填充对应提示到输入框
+            final textMap = {
+              '查询定额': '查询 1-1-1 人工挖土方定额',
+              '工程量计算': '计算 150 立方米土方工程量',
+              '材料换算': '换算混凝土材料价格',
+            };
+            _textController.text = textMap[hint['text']] ?? '';
+          },
+          child: Container(
+            height: cardHeight,
+            margin: const EdgeInsets.symmetric(horizontal: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              borderRadius: BorderRadius.circular(cardHeight / 2),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  hint['icon'] as IconData,
+                  size: 12,
+                  color: hint['color'] as Color,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  hint['text'] as String,
+                  style: const TextStyle(
+                    fontSize: fontSize,
+                    color: DesignTokens.secondaryText,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ],
-      ),
-      child: GestureDetector(
-        onTap: _cycleHint,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              CupertinoIcons.lightbulb_fill,
-              size: 12,
-              color: CupertinoColors.systemYellow,
-            ),
-            const SizedBox(width: 6),
-            Text(
-              _voiceHints[_currentHintIndex],
-              style: const TextStyle(
-                fontSize: 12,
-                color: DesignTokens.secondaryText,
-              ),
-            ),
-            const SizedBox(width: 4),
-            const Icon(
-              CupertinoIcons.arrow_2_circlepath,
-              size: 10,
-              color: DesignTokens.tertiaryText,
-            ),
-          ],
-        ),
-      ),
+        );
+      }).toList(),
     );
   }
 }
