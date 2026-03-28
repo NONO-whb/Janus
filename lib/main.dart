@@ -1949,56 +1949,6 @@ class _ChatViewState extends State<ChatView> with TickerProviderStateMixin {
     return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
   }
 
-  Widget _buildVoiceHintCard() {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            _currentHintIndex = (_currentHintIndex + 1) % _voiceHints.length;
-          });
-        },
-        child: Container(
-          margin: const EdgeInsets.only(left: 40, top: 8, bottom: 16),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: Colors.grey[100],
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.grey[200]!),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                CupertinoIcons.lightbulb_fill,
-                size: 14,
-                color: CupertinoColors.systemYellow,
-              ),
-              const SizedBox(width: 6),
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: Text(
-                  _voiceHints[_currentHintIndex],
-                  key: ValueKey<int>(_currentHintIndex),
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: DesignTokens.secondaryText,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 4),
-              Icon(
-                CupertinoIcons.arrow_2_circlepath,
-                size: 12,
-                color: Colors.grey[400],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildInputArea() {
     final editMessage = _editingMessageId != null
         ? _messages.firstWhere((m) => m.id == _editingMessageId,
