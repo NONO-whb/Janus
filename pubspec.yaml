@@ -1,5 +1,5 @@
-name: eng
-description: "A new Flutter project."
+name: janus
+description: "Janus AI Team - 造价工程智能助手"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev

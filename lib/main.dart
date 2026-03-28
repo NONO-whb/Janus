@@ -1,24 +1,23 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'services/api_service.dart';
 
 void main() {
-  runApp(const EngApp());
+  runApp(const JanusApp());
 }
 
 // ==================== 应用入口 ====================
-class EngApp extends StatelessWidget {
-  const EngApp({super.key});
+class JanusApp extends StatelessWidget {
+  const JanusApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const CupertinoApp(
-      title: 'ENG',
+      title: 'Janus',
       debugShowCheckedModeBanner: false,
       theme: CupertinoThemeData(
         primaryColor: Colors.black,
@@ -318,7 +317,7 @@ class _LogoAnimationState extends State<LogoAnimation>
           ),
           child: const Center(
             child: Text(
-              'E',
+              'J',
               style: TextStyle(
                 fontSize: 40,
                 fontWeight: FontWeight.w700,
@@ -332,11 +331,9 @@ class _LogoAnimationState extends State<LogoAnimation>
   }
 }
 
-// ==================== 侧边栏视图 ====================
-class _SidebarView extends StatelessWidget {
-  final VoidCallback onClose;
-
-  const _SidebarView({required this.onClose});
+// ==================== 侧边栏页面 ====================
+class SidebarPage extends StatelessWidget {
+  const SidebarPage({super.key});
 
   final List<Map<String, dynamic>> _records = const [
     {'title': '混凝土基础定额匹配记录', 'date': '2026-03-27', 'type': '定额'},
@@ -353,41 +350,41 @@ class _SidebarView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.75,
-      height: MediaQuery.of(context).size.height,
-      color: DesignTokens.background,
+    return CupertinoPageScaffold(
+      backgroundColor: DesignTokens.background,
+      navigationBar: CupertinoNavigationBar(
+        middle: const Text(
+          '工作空间',
+          style: TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        leading: CupertinoButton(
+          padding: EdgeInsets.zero,
+          minSize: 0,
+          onPressed: () => Navigator.pop(context),
+          child: const Icon(
+            CupertinoIcons.back,
+            size: 24,
+            color: Colors.black,
+          ),
+        ),
+        trailing: CupertinoButton(
+          padding: EdgeInsets.zero,
+          minSize: 0,
+          onPressed: () {},
+          child: const Icon(
+            CupertinoIcons.gear,
+            size: 22,
+            color: Colors.black,
+          ),
+        ),
+      ),
       child: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 头部
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    '工作空间',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  CupertinoButton(
-                    padding: const EdgeInsets.all(8), // 增大点击区域
-                    minSize: 44, // 符合iOS点击规范
-                    onPressed: onClose,
-                    child: const Icon(
-                      CupertinoIcons.xmark,
-                      size: 24,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Divider(height: 1),
             // 记录事项区域
             Expanded(
               flex: 1,
@@ -1382,39 +1379,17 @@ class _ChatViewState extends State<ChatView> with TickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
   String? _editingMessageId;
 
-  // 语音提示相关
-  final List<String> _voiceHints = [
-    '试试说：分析这张图纸的工程量',
-    '试试说：帮我匹配土建定额',
-    '试试说：计算钢筋混凝土用量',
-    '试试说：审核这个项目的造价',
-  ];
-  int _currentHintIndex = 0;
-  Timer? _hintTimer;
-
   @override
   void initState() {
     super.initState();
     _addWelcomeMessage();
-    _startHintRotation();
   }
 
   @override
   void dispose() {
     _textController.dispose();
     _scrollController.dispose();
-    _hintTimer?.cancel();
     super.dispose();
-  }
-
-  void _startHintRotation() {
-    _hintTimer = Timer.periodic(const Duration(seconds: 4), (timer) {
-      if (mounted) {
-        setState(() {
-          _currentHintIndex = (_currentHintIndex + 1) % _voiceHints.length;
-        });
-      }
-    });
   }
 
   void _addWelcomeMessage() {
@@ -1422,7 +1397,7 @@ class _ChatViewState extends State<ChatView> with TickerProviderStateMixin {
       _messages.add(
         ChatMessage(
           id: 'welcome',
-          content: '您好！我是ENG造价助手。我可以帮您：\n\n• 分析图纸并提取工程量\n• 智能匹配定额编码\n• 计算分部分项工程费\n• 审核造价合理性\n\n请告诉我您需要什么帮助？',
+          content: '您好！我是Janus造价助手。我可以帮您：\n\n• 分析图纸并提取工程量\n• 智能匹配定额编码\n• 计算分部分项工程费\n• 审核造价合理性\n\n请告诉我您需要什么帮助？',
           isUser: false,
           timestamp: DateTime.now(),
           confidenceLevel: ConfidenceLevel.high,
@@ -1540,7 +1515,7 @@ class _ChatViewState extends State<ChatView> with TickerProviderStateMixin {
           ),
         ),
         middle: Text(
-          'ENG 造价助手',
+          'Janus 造价助手',
           style: DesignTokens.titleStyle,
         ),
         trailing: CupertinoButton(
@@ -1561,11 +1536,8 @@ class _ChatViewState extends State<ChatView> with TickerProviderStateMixin {
               child: ListView.builder(
                 controller: _scrollController,
                 padding: const EdgeInsets.all(16),
-                itemCount: _messages.length + 1,
+                itemCount: _messages.length,
                 itemBuilder: (context, index) {
-                  if (index == _messages.length) {
-                    return _buildVoiceHintCard();
-                  }
                   final message = _messages[index];
                   if (message.isUser) {
                     return _buildUserMessage(message);
@@ -1583,10 +1555,9 @@ class _ChatViewState extends State<ChatView> with TickerProviderStateMixin {
   }
 
   void _showProjectsList(BuildContext context) {
-    showCupertinoModalPopup(
-      context: context,
-      builder: (context) => _SidebarView(
-        onClose: () => Navigator.pop(context),
+    Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: (context) => const SidebarPage(),
       ),
     );
   }
@@ -1690,7 +1661,7 @@ class _ChatViewState extends State<ChatView> with TickerProviderStateMixin {
                   ),
                   child: const Center(
                     child: Text(
-                      'E',
+                      'J',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
@@ -2474,6 +2445,16 @@ class SettingsView extends StatelessWidget {
           '设置',
           style: DesignTokens.titleStyle,
         ),
+        leading: CupertinoButton(
+          padding: EdgeInsets.zero,
+          minSize: 0,
+          onPressed: () => Navigator.pop(context),
+          child: const Icon(
+            CupertinoIcons.back,
+            size: 24,
+            color: Colors.black,
+          ),
+        ),
       ),
       child: SafeArea(
         child: ListView(
@@ -2724,7 +2705,7 @@ class _BottomActionsState extends State<BottomActions>
     '试试说："计算工程量 150 立方米"',
     '试试说："换算材料价格"',
   ];
-  int _currentHintIndex = 0;
+  final int _currentHintIndex = 0;
 
   @override
   void initState() {
@@ -2803,12 +2784,6 @@ class _BottomActionsState extends State<BottomActions>
           _isVoiceMode = false;
         });
       }
-    });
-  }
-
-  void _cycleHint() {
-    setState(() {
-      _currentHintIndex = (_currentHintIndex + 1) % _voiceHints.length;
     });
   }
 
@@ -2966,7 +2941,7 @@ class _BottomActionsState extends State<BottomActions>
 
   Widget _buildMainInputRow() {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         _buildWaveToggleButton(),
         const SizedBox(width: 10),
@@ -3114,7 +3089,7 @@ class _BottomActionsState extends State<BottomActions>
               controller: _textController,
               focusNode: _focusNode,
               placeholder: '发送消息...',
-              placeholderStyle: TextStyle(
+              placeholderStyle: const TextStyle(
                 color: DesignTokens.tertiaryText,
                 fontSize: 16,
                 fontFamilyFallback: DesignTokens._fontFallback,
@@ -3180,7 +3155,6 @@ class _BottomActionsState extends State<BottomActions>
         child: Container(
           width: 36,
           height: 36,
-          margin: const EdgeInsets.only(top: 4), // 下移 4（约0.1倍高度）
           decoration: BoxDecoration(
             color: _isOptionsExpanded ? Colors.black : Colors.grey[200],
             shape: BoxShape.circle,
@@ -3207,21 +3181,21 @@ class _BottomActionsState extends State<BottomActions>
     );
   }
 
-  // 3个固定提示卡数据
+  // 3个固定提示卡数据（删除"试试说："前缀）
   final List<Map<String, dynamic>> _hintCards = [
     {
       'icon': CupertinoIcons.lightbulb_fill,
-      'text': '查询定额',
+      'text': '分析图纸工程量',
       'color': CupertinoColors.systemYellow,
     },
     {
       'icon': CupertinoIcons.number,
-      'text': '工程量计算',
+      'text': '匹配土建定额',
       'color': CupertinoColors.systemBlue,
     },
     {
       'icon': CupertinoIcons.arrow_2_circlepath,
-      'text': '材料换算',
+      'text': '计算材料用量',
       'color': CupertinoColors.systemGreen,
     },
   ];

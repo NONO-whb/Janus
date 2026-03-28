@@ -1,15 +1,31 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 // API 配置
 class ApiConfig {
-  // 默认本机地址，实际应从设置读取
-  static String baseUrl = 'http://192.168.0.112:8742';
+  // 使用动态IP检测或配置
+  static String _detectedIp = '127.0.0.1';
+
+  // 默认本机地址
+  static String get baseUrl => 'http://$_detectedIp:8080';
 
   static void setBaseUrl(String ip) {
-    baseUrl = 'http://$ip:8742';
+    _detectedIp = ip;
+  }
+
+  // 初始化时尝试从设置加载
+  static Future<void> init() async {
+    // 可在此处添加SharedPreferences加载逻辑
+    _detectedIp = await _getLocalIp();
+  }
+
+  // 获取本地IP（用于开发环境）
+  static Future<String> _getLocalIp() async {
+    // 简化处理，实际应从设置读取或使用mdns
+    return _detectedIp;
   }
 }
 
@@ -281,7 +297,7 @@ class ApiService {
         );
       }
     } catch (e) {
-      print('Get connection info error: $e');
+      if (kDebugMode) print('Get connection info error: $e');
     }
     return null;
   }
@@ -308,7 +324,7 @@ class ApiService {
         )).toList();
       }
     } catch (e) {
-      print('Get projects error: $e');
+      if (kDebugMode) print('Get projects error: $e');
     }
     return [];
   }
@@ -337,7 +353,7 @@ class ApiService {
         );
       }
     } catch (e) {
-      print('Get project detail error: $e');
+      if (kDebugMode) print('Get project detail error: $e');
     }
     return null;
   }
@@ -351,8 +367,7 @@ class ApiService {
             Uri.parse('${ApiConfig.baseUrl}/api/v1/command'),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode({
-              'text': message,
-              'source': 'mobile',
+              'message': message,
               'client_id': projectId,
             }),
           )
@@ -367,7 +382,7 @@ class ApiService {
         );
       }
     } catch (e) {
-      print('Send message error: $e');
+      if (kDebugMode) print('Send message error: $e');
     }
     return null;
   }
@@ -391,7 +406,7 @@ class ApiService {
       final response = await request.send().timeout(const Duration(minutes: 2));
       return response.statusCode == 200;
     } catch (e) {
-      print('Upload file error: $e');
+      if (kDebugMode) print('Upload file error: $e');
       return false;
     }
   }
@@ -412,7 +427,7 @@ class ApiService {
       final response = await request.send().timeout(const Duration(minutes: 2));
       return response.statusCode == 200;
     } catch (e) {
-      print('Upload file bytes error: $e');
+      if (kDebugMode) print('Upload file bytes error: $e');
       return false;
     }
   }
@@ -429,7 +444,7 @@ class ApiService {
         return BillOfQuantities.fromJson(json);
       }
     } catch (e) {
-      print('Get bill of quantities error: $e');
+      if (kDebugMode) print('Get bill of quantities error: $e');
     }
     return null;
   }
@@ -449,7 +464,7 @@ class ApiService {
           .timeout(const Duration(seconds: 10));
       return response.statusCode == 200;
     } catch (e) {
-      print('Update bill item error: $e');
+      if (kDebugMode) print('Update bill item error: $e');
       return false;
     }
   }

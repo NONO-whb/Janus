@@ -204,10 +204,7 @@ class WebSocketService extends ChangeNotifier {
     // 发送消息到服务器
     try {
       _channel!.sink.add(jsonEncode({
-        'type': 'command',
         'text': content.trim(),
-        'source': 'mobile',
-        'client_id': _currentProjectId,
       }));
     } catch (e) {
       _removeMessage(typingMessage.id);

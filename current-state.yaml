@@ -1,0 +1,40 @@
+# ENG App - 当前状态
+
+project: eng-app
+last_updated: 2026-03-25
+
+# 当前焦点
+current_focus:
+  module: 前端UI优化
+  task: Logo动画、提示卡片、输入框、设置页配置
+  status: done
+
+# 完成的功能
+completed:
+  - 首页UI框架
+  - 首页Logo呼吸动画 + 微旋转效果
+  - 提示卡片点击反馈 + 跳转逻辑
+  - 首页输入框可点击交互
+  - 项目列表页
+  - 项目详情页
+  - 设置页 + 服务器地址配置
+  - 文件上传（跨平台）
+  - WebSocket实时对话
+
+# 待开发
+pending:
+  - 后端整体功能改进（真数据、真AI）
+  - 真机测试
+  - 性能优化
+  - 打包发布
+
+# 已知问题
+issues: []
+
+# 今日备忘
+notes:
+  - 前端UI改进全部完成，未改动API契约
+  - Logo动画使用AnimationController实现呼吸效果
+  - 提示卡片支持点击后带问题跳转项目列表
+  - 设置页新增服务器地址配置功能
+  - 等待后端整体功能改进阶段
