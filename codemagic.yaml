@@ -26,15 +26,15 @@ workflows:
           pod install --repo-update
           cd ..
 
-      # 3. 构建 iOS（Debug 版，无需签名）
-      - name: Build iOS Debug
-        script: flutter build ios --debug --no-codesign
+      # 3. 构建 iOS Simulator（无需签名）
+      - name: Build iOS Simulator
+        script: flutter build ios --simulator --debug --no-codesign
 
       # 4. 打包成 ipa
       - name: Create IPA
         script: |
           mkdir -p build/ios/ipa
-          cd build/ios/iphoneos
+          cd build/ios/iphonesimulator
           mkdir -p Payload
           cp -r Runner.app Payload/
           zip -r ../ipa/Janus.ipa Payload
