@@ -17,7 +17,9 @@ workflows:
     scripts:
       # 1. 获取依赖
       - name: Get Flutter packages
-        script: flutter pub get
+        script: |
+          flutter pub upgrade
+          flutter pub get
 
       # 2. iOS 构建准备
       - name: Install CocoaPods
